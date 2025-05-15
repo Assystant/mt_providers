@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mt_providers"
+version = "0.1.0"
+description = "Extensible Machine Translation Providers Framework"
+readme = "README.md"
+authors = [
+    { name = "Saket Shukla", email = "saket@assystant.com" }
+]
+license = "MIT"
+keywords = ["translation", "machine-translation", "nlp", "language"]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "requests>=2.25.0,<3.0.0",
+    "tenacity>=8.0.0,<9.0.0",
+    "cachetools>=5.0.0,<6.0.0",
+    "packaging>=21.0,<22.0",
+    "typing-extensions>=4.0.0; python_version < '3.8'"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0.0",
+    "pytest-asyncio>=0.18.0",
+    "pytest-cov>=2.0.0",
+    "requests-mock>=1.9.0",
+    "coverage>=6.0.0",
+    "black>=22.0.0",
+    "isort>=5.0.0",
+    "mypy>=0.900",
+]
+docs = [
+    "sphinx>=4.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+]
+
+[project.entry-points."mt_providers"]
+microsoft = "mt_providers.providers.microsoft:MicrosoftTranslator"
+# Add other providers here
+
+[tool.hatch.build.targets.wheel]
+packages = ["mt_providers"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.8"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov=mt_providers --cov-report=xml --cov-report=term-missing"
+testpaths = ["tests"]
