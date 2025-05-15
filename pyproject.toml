@@ -11,7 +11,7 @@ authors = [
     { name = "Saket Shukla", email = "saket@assystant.com" }
 ]
 license = "MIT"
-keywords = ["translation", "machine-translation", "nlp", "language"]
+keywords = ["translation", "machine-translation", "nlp", "language", "mt-providers"]
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -40,6 +40,7 @@ test = [
     "black>=22.0.0",
     "isort>=5.0.0",
     "mypy>=0.900",
+    "types-requests>=2.28.0",
 ]
 docs = [
     "sphinx>=4.0.0",
