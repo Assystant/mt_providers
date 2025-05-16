@@ -11,6 +11,12 @@ class TranslationStatus(Enum):
     FAILED = "failed"
     PENDING = "pending"
 
+    def __str__(self) -> str:
+        return self.value
+
+    def __repr__(self) -> str:
+        return f"TranslationStatus.{self.name}"
+
 
 class TranslationProvider(Protocol):
     def translate(self, text: str, source: str, target: str) -> str:

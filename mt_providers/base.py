@@ -39,7 +39,7 @@ class BaseTranslationProvider(ABC):
         self.config = config
         self.validate_config()
         self._last_request_time: Optional[float] = None
-        self._rate_limit_lock = asyncio.Lock()
+        self._rate_limit_lock = None
 
     def validate_config(self) -> None:
         """Validate provider configuration."""
