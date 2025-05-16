@@ -15,7 +15,7 @@ class TranslationStatus(Enum):
         return self.value
 
     def __repr__(self) -> str:
-        return f"TranslationStatus.{self.name}"
+        return self.value
 
 
 class TranslationProvider(Protocol):
