@@ -30,11 +30,11 @@ class BaseTranslationProvider(ABC):
         # Version compatibility check
         from packaging import version
 
-        min_ver = self.min_supported_version
-        if version.parse(__version__) < version.parse(min_ver):
-            raise ConfigurationError(
-                f"Provider {self.name} requires mt_providers>={min_ver}"
-            )
+        # min_ver = self.min_supported_version
+        # if version.parse(__version__) < version.parse(min_ver):
+        #     raise ConfigurationError(
+        #         f"Provider {self.name} requires mt_providers>={min_ver}"
+        #     )
 
         self.config = config
         self.validate_config()
