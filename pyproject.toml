@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mt_providers"
-version = "0.1.5"
+version = "0.1.6"
 description = "Extensible Machine Translation Providers Framework"
 readme = "README.md"
 authors = [
@@ -46,10 +46,6 @@ docs = [
     "sphinx>=4.0.0",
     "sphinx-rtd-theme>=1.0.0",
 ]
-
-[project.entry-points."mt_providers"]
-microsoft = "mt_providers_microsoft:MicrosoftTranslator"
-# Add other providers here
 
 [tool.hatch.build.targets.wheel]
 packages = ["mt_providers"]
