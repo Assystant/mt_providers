@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mt_providers"
-version = "0.1.6"
+version = "0.1.7"
 description = "Extensible Machine Translation Providers Framework"
 readme = "README.md"
 authors = [
@@ -60,7 +60,7 @@ profile = "black"
 multi_line_output = 3
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 strict = true
 warn_return_any = true
 warn_unused_configs = true

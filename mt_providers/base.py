@@ -3,7 +3,7 @@ import logging
 import time
 import uuid
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .exceptions import ConfigurationError
@@ -39,7 +39,7 @@ class BaseTranslationProvider(ABC):
         self.config = config
         self.validate_config()
         self._last_request_time: Optional[float] = None
-        self._rate_limit_lock = None
+        self._rate_limit_lock: Optional[asyncio.Lock] = None
 
     def validate_config(self) -> None:
         """Validate provider configuration."""
@@ -91,7 +91,7 @@ class BaseTranslationProvider(ABC):
             "status": TranslationStatus.FAILED if error else TranslationStatus.SUCCESS,
             "error": error,
             "request_id": str(uuid.uuid4()),
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(timezone.utc),
             "metadata": metadata or {},
         }
 
@@ -99,6 +99,9 @@ class BaseTranslationProvider(ABC):
         """Enforce rate limiting if configured."""
         if not self.config.rate_limit:
             return
+
+        if self._rate_limit_lock is None:
+            self._rate_limit_lock = asyncio.Lock()
 
         async with self._rate_limit_lock:
             if self._last_request_time:

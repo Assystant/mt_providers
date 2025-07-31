@@ -10,7 +10,9 @@ from .base import BaseTranslationProvider
 from .exceptions import ProviderError, ProviderNotFoundError
 from .types import TranslationConfig, TranslationStatus  # Add this import
 
-__all__ = ["register_provider", "get_provider", "list_providers", "discover_providers"]
+__all__ = [
+    "register_provider", "get_provider", "list_providers",
+    "discover_providers"]
 
 # Add version info
 try:
@@ -41,9 +43,12 @@ def register_provider(name: str, cls: Type[BaseTranslationProvider]) -> None:
         raise ProviderError("Provider name must be a non-empty string")
 
     if name in PROVIDER_REGISTRY:
-        raise ProviderError(f"Provider '{name}' is already registered")
+        logger.warning(f"Provider '{name}' is already registered, skipping")
+        return
 
-    if not isinstance(cls, type) or not issubclass(cls, BaseTranslationProvider):
+    if not isinstance(cls, type) or not issubclass(
+        cls, BaseTranslationProvider
+    ):
         raise ProviderError(
             f"Provider {name} must inherit from BaseTranslationProvider"
         )
@@ -53,7 +58,9 @@ def register_provider(name: str, cls: Type[BaseTranslationProvider]) -> None:
 
         min_ver = cls.min_supported_version
         if version.parse(__version__) < version.parse(min_ver):
-            raise ProviderError(f"Provider {name} requires mt_providers>={min_ver}")
+            raise ProviderError(
+                f"Provider {name} requires mt_providers>={min_ver}"
+            )
 
     with _registry_lock:
         PROVIDER_REGISTRY[name] = cls
@@ -103,14 +110,19 @@ def discover_providers(
     """
     registered: List[str] = []
     try:
-        entry_points = metadata.entry_points().get(entry_point_group, [])
+        # Handle both old and new importlib.metadata API
+        eps = metadata.entry_points()
+        if hasattr(eps, 'get'):  # Old API (Python < 3.10)
+            entry_points_list = eps.get(entry_point_group, [])
+        else:  # New API (Python 3.10+)
+            entry_points_list = list(eps.select(group=entry_point_group))
     except Exception as e:
         logger.error(f"Failed to get entry points: {e}")
         if raise_errors:
             raise
         return registered
 
-    for entry_point in entry_points:
+    for entry_point in entry_points_list:
         try:
             provider_class = entry_point.load()
             if not hasattr(provider_class, "name"):
@@ -122,7 +134,8 @@ def discover_providers(
             registered.append(provider_class.name)
         except Exception as e:
             logger.error(
-                f"Failed to load provider {entry_point.name}: {str(e)}", exc_info=True
+                f"Failed to load provider {entry_point.name}: {str(e)}",
+                exc_info=True
             )
             if raise_errors:
                 raise
@@ -137,7 +150,10 @@ def clear_registry() -> None:
     get_provider.cache_clear()
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=4, max=10)
+)
 async def check_provider_health(
     name: str, config: TranslationConfig, test_text: str = "test"
 ) -> bool:
@@ -162,4 +178,4 @@ async def check_provider_health(
         return result.get("status") == TranslationStatus.SUCCESS
     except Exception as e:
         logger.error(f"Health check failed for provider {name}: {str(e)}")
-        raise
+        return False
