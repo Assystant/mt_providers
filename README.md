@@ -10,26 +10,41 @@ Extensible Machine Translation Providers Framework
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Key Features](#key-features) 
-- [Quick Start](#quick-start)
-  - [Installation](#installation)
-  - [Basic Usage](#basic-usage)
-  - [Async Usage](#async-usage)
-- [Available Providers](#available-providers)
-- [Provider Management](#provider-management)
-- [Configuration](#configuration)
-- [Error Handling](#error-handling)
-- [Advanced Features](#advanced-features)
-- [Documentation](#documentation)
-- [Testing](#testing)
-- [Performance](#performance)
-- [Compatibility](#compatibility)
-- [Contributing](#contributing)
-- [License](#license)
-- [Support & Community](#support--community)
-- [Changelog](#changelog)
-- [Roadmap](#roadmap)
+- [MT Providers](#mt-providers)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Key Features](#key-features)
+  - [Quick Start](#quick-start)
+    - [Installation](#installation)
+    - [Basic Usage](#basic-usage)
+    - [Async Usage](#async-usage)
+  - [Available Providers](#available-providers)
+  - [Provider Management](#provider-management)
+  - [Configuration](#configuration)
+    - [Basic Configuration](#basic-configuration)
+    - [Environment-Based Configuration](#environment-based-configuration)
+  - [Error Handling](#error-handling)
+  - [Advanced Features](#advanced-features)
+    - [Rate Limiting](#rate-limiting)
+    - [Custom Provider Development](#custom-provider-development)
+  - [Documentation](#documentation)
+    - [Quick Links](#quick-links)
+  - [Testing](#testing)
+    - [Test Coverage](#test-coverage)
+  - [Performance](#performance)
+    - [Benchmarks](#benchmarks)
+  - [Compatibility](#compatibility)
+  - [Contributing](#contributing)
+    - [How to Contribute](#how-to-contribute)
+    - [Areas for Contribution](#areas-for-contribution)
+    - [Development Setup](#development-setup)
+    - [Project Structure](#project-structure)
+  - [License](#license)
+  - [Support \& Community](#support--community)
+  - [Changelog](#changelog)
+  - [Roadmap](#roadmap)
+    - [Current Status](#current-status)
+    - [Upcoming Features](#upcoming-features)
 
 ## Overview
 
@@ -102,9 +117,9 @@ asyncio.run(async_translation())
 | Provider | Package | Status | Features |
 |----------|---------|---------|----------|
 | Microsoft Translator | `mt-provider-microsoft` | ✅ Available | Sync/Async, Batch, Rate Limiting |
+| DeepL | `mt_providers_deepl` | ✅ Available | Sync/Async, Batch, Rate Limiting |
 | Google Translate | `mt-provider-google` | 🚧 Coming Soon | High-quality neural translations |
 | Amazon Translate | `mt-provider-amazon` | 🚧 Coming Soon | AWS ecosystem integration |
-| DeepL | `mt-provider-deepl` | 🚧 Coming Soon | Premium translation quality |
 
 ## Provider Management
 

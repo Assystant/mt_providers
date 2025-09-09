@@ -475,6 +475,62 @@ def get_cached_provider(provider_name: str, api_key: str, region: str = None):
 3. **Request Deduplication**: Hash-based caching for recent requests
 4. **Structured Logging**: Correlation IDs and request tracing
 
+## README.md Issues and Inconsistencies
+
+### Documentation vs Reality Gaps
+
+#### 1. Package Names Inconsistency
+**README claims**: `pip install mt-provider-microsoft`
+**Actual packages**: 
+- `mt_provider_deepl` (underscore, not hyphen)
+- `mt_provider_microsoft` (underscore, not hyphen)
+
+#### 2. Provider Status Misalignment
+**README lists**:
+- DeepL as `mt_providers_deepl` (wrong package name format)
+- DeepL as "🚧 Coming Soon" in roadmap section (line 402)
+- Microsoft Translator as `mt-provider-microsoft` (wrong package name)
+
+**Reality**: Both DeepL and Microsoft are fully implemented and available
+
+#### 3. Upcoming Features Already Implemented
+**README roadmap** (lines 401-403):
+```
+- 🚧 Amazon Translate Provider: AWS ecosystem integration  
+- 🚧 DeepL Provider: Premium translation quality
+```
+
+**Reality**: DeepL is already implemented, not "coming soon"
+
+#### 4. Missing Configuration Options
+**README TranslationConfig** (lines 150-157) doesn't mention:
+- `endpoint` parameter (exists in actual config)
+- `user_agent` parameter (needed for the hardcoded User-Agent fix)
+
+#### 5. Health Check API Inconsistency
+**README shows**: `from mt_providers.registry import check_provider_health`
+**Actual location**: Function exists but the import pattern shown may not work as expected
+
+#### 6. Documentation Links Point to Non-existent Files
+**README references** (lines 245-249):
+- `docs/api_reference.md`
+- `docs/provider_integration_guide.md`
+- `docs/usage_examples.md`
+- `docs/configuration_guide.md`
+- `docs/architectural_decisions.md`
+
+**Reality**: These files don't exist in the repository
+
+### Required README Updates
+
+1. **Fix package names** throughout the document
+2. **Update provider status** - mark DeepL as available
+3. **Correct roadmap section** - remove DeepL from upcoming features
+4. **Add missing config parameters** to TranslationConfig examples
+5. **Update import examples** for better accuracy
+6. **Create placeholder docs** or remove broken links
+7. **Add User-Agent configuration** section once implemented
+
 ## Technical Debt Summary
 
 ### Code Quality Issues
@@ -482,13 +538,16 @@ def get_cached_provider(provider_name: str, api_key: str, region: str = None):
 - Hardcoded configuration values
 - Inconsistent error handling
 - Resource lifecycle management
+- Documentation inconsistencies with actual implementation
 
 ### Architecture Concerns
 - Tight coupling between providers and HTTP clients
 - Lack of provider abstraction for common operations
 - No clear extension points for middleware/interceptors
+- Outdated documentation creating confusion for users
 
 ### Maintenance Burden
 - Duplicate language mapping code
 - Provider-specific error handling
 - Manual version management in User-Agent strings
+- Documentation maintenance lag behind code changes
