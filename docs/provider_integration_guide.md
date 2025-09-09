@@ -90,7 +90,7 @@ class MyProvider(BaseTranslationProvider):
     requires_region = False           # Does API need region?
     supports_async = True             # Do you support async?
     max_chunk_size = 5000            # Max chars per request
-    min_supported_version = "0.1.0"   # Min framework version
+    min_supported_version = "0.1.8"   # Min framework version
 ```
 
 #### Configuration Validation

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mt_providers"
-version = "0.1.7"
+version = "0.1.8"
 description = "Extensible Machine Translation Providers Framework"
 readme = "README.md"
 authors = [

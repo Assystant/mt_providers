@@ -2,7 +2,7 @@
 
 [![Tests](https://img.shields.io/badge/tests-27%20passing-brightgreen)](https://github.com/assystant/mt-providers)
 [![Coverage](https://img.shields.io/badge/coverage-77%25-brightgreen)](https://github.com/assystant/mt-providers)
-[![Version](https://img.shields.io/badge/version-0.1.7-blue)](https://pypi.org/project/mt-providers/)
+[![Version](https://img.shields.io/badge/version-0.1.8-blue)](https://pypi.org/project/mt-providers/)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://pypi.org/project/mt-providers/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -58,6 +58,7 @@ MT Providers is a unified framework for machine translation services that allows
 - 🛡️ **Rate Limiting**: Built-in rate limiting and retry logic
 - 🎯 **Type Safety**: Complete type annotations with mypy support
 - 🏥 **Health Checks**: Provider health monitoring and status checking
+- 🏷️ **Smart User-Agent**: Automatic provider identification with custom override
 - 📝 **Comprehensive Logging**: Structured logging throughout
 - 🧪 **Well Tested**: High test coverage and quality assurance
 
@@ -70,7 +71,7 @@ MT Providers is a unified framework for machine translation services that allows
 pip install mt-providers
 
 # Install providers (example with Microsoft Translator)
-pip install mt-provider-microsoft
+pip install mt_provider_microsoft
 ```
 
 ### Basic Usage
@@ -116,10 +117,8 @@ asyncio.run(async_translation())
 
 | Provider | Package | Status | Features |
 |----------|---------|---------|----------|
-| Microsoft Translator | `mt-provider-microsoft` | ✅ Available | Sync/Async, Batch, Rate Limiting |
-| DeepL | `mt_providers_deepl` | ✅ Available | Sync/Async, Batch, Rate Limiting |
-| Google Translate | `mt-provider-google` | 🚧 Coming Soon | High-quality neural translations |
-| Amazon Translate | `mt-provider-amazon` | 🚧 Coming Soon | AWS ecosystem integration |
+| Microsoft Translator | `mt_provider_microsoft` | ✅ Available | Sync/Async, Batch, Rate Limiting |
+| DeepL | `mt_provider_deepl` | ✅ Available | Sync/Async, Batch, Rate Limiting |
 
 ## Provider Management
 
@@ -149,11 +148,13 @@ from mt_providers.types import TranslationConfig
 
 config = TranslationConfig(
     api_key="your-api-key",
-    region="your-region",        # Provider-specific
-    timeout=30,                  # Request timeout in seconds
-    rate_limit=10,              # Requests per second
-    retry_attempts=3,           # Number of retries
-    retry_backoff=1.0          # Backoff multiplier
+    region="your-region",             # Provider-specific
+    timeout=30,                       # Request timeout in seconds
+    rate_limit=10,                    # Requests per second
+    retry_attempts=3,                 # Number of retries
+    retry_backoff=1.0,                # Backoff multiplier
+    user_agent_name="MyApp",          # Optional: Custom UA name
+    user_agent_version="1.0"          # Optional: Custom UA version (required if name is set)
 )
 ```
 
@@ -165,35 +166,37 @@ import os
 config = TranslationConfig(
     api_key=os.getenv("TRANSLATION_API_KEY"),
     region=os.getenv("TRANSLATION_REGION", "westus2"),
-    rate_limit=int(os.getenv("TRANSLATION_RATE_LIMIT", "10"))
+    rate_limit=int(os.getenv("TRANSLATION_RATE_LIMIT", "10")),
+    user_agent_name=os.getenv("APP_NAME"),      # Optional: For application identification
+    user_agent_version=os.getenv("APP_VERSION") # Optional: Application version
 )
 ```
+
+**User-Agent Notes**:
+- If not specified, providers automatically use their package name and version
+- Set both `user_agent_name` and `user_agent_version` for custom identification
+- Useful for partner integrations or application-specific tracking
 
 ## Error Handling
 
 ```python
-from mt_providers.exceptions import (
-    ProviderNotFoundError, 
-    ConfigurationError,
-    TranslationError
-)
+from mt_providers.exceptions import ProviderNotFoundError, ConfigurationError
 from mt_providers.types import TranslationStatus
 
 try:
     translator = get_provider("microsoft")(config)
     result = translator.translate("Hello", "en", "es")
     
+    # Check result status - all errors are returned in the response
     if result["status"] == TranslationStatus.SUCCESS:
         print(f"Translation: {result['translated_text']}")
     else:
         print(f"Translation failed: {result['error']}")
         
 except ProviderNotFoundError:
-    print("Provider not found")
+    print("Provider not found in registry")
 except ConfigurationError:
-    print("Configuration error")
-except TranslationError:
-    print("Translation error")
+    print("Provider configuration error")
 ```
 
 ## Advanced Features
@@ -397,11 +400,9 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed information about changes in each 
 - ✅ **Performance**: Optimized for production workloads
 
 ### Upcoming Features
-- 🚧 **Google Translate Provider**: High-quality neural translations
-- 🚧 **Amazon Translate Provider**: AWS ecosystem integration  
-- 🚧 **DeepL Provider**: Premium translation quality
 - 🚧 **Caching Layer**: Redis/Memcached response caching
 - 🚧 **Translation Memory**: Integration with TMX files
 - 🚧 **Streaming Support**: Real-time translation capabilities
 - 🚧 **Metrics & Observability**: Detailed performance monitoring
 - 🚧 **CLI Tools**: Command-line interface for batch operations
+- 🚧 **Additional Providers**: Google Translate, Amazon Translate, and other services

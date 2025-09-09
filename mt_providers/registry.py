@@ -167,7 +167,7 @@ async def check_provider_health(
 
         Returns:
             bool: True if provider is operational, False otherwise"""
-    print("ATTEMPTING HEALTH CHECK")
+    logger.debug(f"Attempting health check for provider {name}")
     try:
         provider = get_provider(name)(config)
         if provider.supports_async:

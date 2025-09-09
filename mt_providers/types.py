@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Protocol, TypedDict
+from typing import Any, Dict, List, Optional, TypedDict
 
 
 class TranslationStatus(Enum):
@@ -18,14 +18,6 @@ class TranslationStatus(Enum):
         return str(self.value)
 
 
-class TranslationProvider(Protocol):
-    def translate(self, text: str, source: str, target: str) -> str:
-        ...
-
-    def bulk_translate(self, texts: List[str], source: str, target: str) -> List[str]:
-        ...  # Changed from list[str]
-
-
 @dataclass
 class TranslationConfig:
     """Base configuration for translation providers."""
@@ -37,6 +29,15 @@ class TranslationConfig:
     rate_limit: Optional[int] = None
     retry_attempts: int = 3
     retry_backoff: float = 1.0
+    user_agent_name: Optional[str] = None
+    user_agent_version: Optional[str] = None
+    
+    def __post_init__(self):
+        """Validate that both user_agent fields are provided together."""
+        if (self.user_agent_name is None) != (self.user_agent_version is None):
+            raise ValueError(
+                "Both user_agent_name and user_agent_version must be provided together"
+            )
 
 
 class TranslationResponse(TypedDict):

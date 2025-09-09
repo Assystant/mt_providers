@@ -19,7 +19,7 @@ class BaseTranslationProvider(ABC):
     requires_region: bool = False
     supports_async: bool = False
     max_chunk_size: int = 5000
-    min_supported_version: str = "0.1.0"  # Add minimum supported version
+    min_supported_version: str = "0.1.8"  # Add minimum supported version
 
     def __init__(self, config: TranslationConfig):
         from . import __version__
@@ -28,13 +28,15 @@ class BaseTranslationProvider(ABC):
             raise ConfigurationError("Provider name must be set")
 
         # Version compatibility check
-        from packaging import version
-
-        # min_ver = self.min_supported_version
-        # if version.parse(__version__) < version.parse(min_ver):
-        #     raise ConfigurationError(
-        #         f"Provider {self.name} requires mt_providers>={min_ver}"
-        #     )
+        if hasattr(self, 'min_supported_version') and self.min_supported_version:
+            from packaging import version
+            
+            min_ver = self.min_supported_version
+            if version.parse(__version__) < version.parse(min_ver):
+                raise ConfigurationError(
+                    f"Provider {self.name} requires mt_providers>={min_ver}, "
+                    f"but {__version__} is installed"
+                )
 
         self.config = config
         self.validate_config()
@@ -94,6 +96,50 @@ class BaseTranslationProvider(ABC):
             "timestamp": datetime.now(timezone.utc),
             "metadata": metadata or {},
         }
+
+    def get_user_agent(self) -> str:
+        """
+        Get User-Agent string for this provider.
+        
+        Returns:
+            Formatted User-Agent string (name/version)
+        """
+        # If user provides custom UA name/version, use that
+        if self.config.user_agent_name and self.config.user_agent_version:
+            return f"{self.config.user_agent_name}/{self.config.user_agent_version}"
+        
+        # Otherwise, detect from package metadata
+        provider_name = self.name  # Fallback to class name attribute
+        provider_version = "unknown"
+        
+        try:
+            import importlib.metadata as metadata
+            
+            # Get the module where this provider class is defined
+            module_name = self.__class__.__module__
+            
+            # Extract package name from module
+            package_name = module_name.split('.')[0] if '.' in module_name else module_name
+            
+            # Try to get metadata for this package
+            try:
+                dist = metadata.distribution(package_name)
+                provider_version = dist.version
+                
+                # Extract provider name from package name
+                # e.g., 'mt_provider_deepl' -> 'deepl'
+                if package_name.startswith('mt_provider_'):
+                    provider_name = package_name.replace('mt_provider_', '')
+                elif package_name.startswith('mt_providers_'):
+                    provider_name = package_name.replace('mt_providers_', '')
+            except metadata.PackageNotFoundError:
+                pass
+                
+        except Exception:
+            pass
+        
+        return f"{provider_name}/{provider_version}"
+    
 
     async def _handle_rate_limit(self) -> None:
         """Enforce rate limiting if configured."""
