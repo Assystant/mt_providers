@@ -36,3 +36,6 @@ ENV/
 .mypy_cache/
 __pycache__/
 .pytest_cache/
+
+# Local analysis files
+MT_PROVIDERS_ANALYSIS.md
