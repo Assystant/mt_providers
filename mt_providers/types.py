@@ -31,7 +31,8 @@ class TranslationConfig:
     retry_backoff: float = 1.0
     user_agent_name: Optional[str] = None
     user_agent_version: Optional[str] = None
-    
+    partner_name: Optional[str] = None
+
     def __post_init__(self):
         """Validate that both user_agent fields are provided together."""
         if (self.user_agent_name is None) != (self.user_agent_version is None):
