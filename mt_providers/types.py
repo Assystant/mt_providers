@@ -29,16 +29,8 @@ class TranslationConfig:
     rate_limit: Optional[int] = None
     retry_attempts: int = 3
     retry_backoff: float = 1.0
-    user_agent_name: Optional[str] = None
-    user_agent_version: Optional[str] = None
-    partner_name: Optional[str] = None
-
-    def __post_init__(self):
-        """Validate that both user_agent fields are provided together."""
-        if (self.user_agent_name is None) != (self.user_agent_version is None):
-            raise ValueError(
-                "Both user_agent_name and user_agent_version must be provided together"
-            )
+    app_info_name: Optional[str] = None
+    app_info_version: Optional[str] = None
 
 
 class TranslationResponse(TypedDict):
